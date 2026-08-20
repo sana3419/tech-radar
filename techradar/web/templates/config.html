@@ -1,0 +1,22 @@
+{% extends "base.html" %}{% block body %}
+<section>
+<h3>订阅命中（近 7 天）</h3>
+<table style="width:100%;border-collapse:collapse;font-size:14px">
+<tr class="meta"><th align="left">话题</th><th>命中</th><th>进日报</th><th>收藏</th><th>忽略</th><th>互动</th><th>boost</th><th align="left">关键词</th></tr>
+{% for t in topics %}<tr>
+<td>{{ t.label }}</td><td align="center">{{ t.hits }}</td><td align="center">{{ t.pushed }}</td>
+<td align="center">{{ t.saved }}</td><td align="center" style="color:{{ 'crimson' if t.ignored > t.saved and t.ignored else 'inherit' }}">{{ t.ignored }}</td>
+<td align="center">{{ t.engaged }}</td><td align="center">{{ t.boost }}</td>
+<td class="meta">{{ t.queries|join(', ') }}</td></tr>{% endfor %}
+</table>
+<p class="meta">命中多但收藏/互动为 0 → 该收紧关键词或降 boost；命中 0 → 关键词写法可能匹配不到（改 config/subscriptions.yaml 后运行 techradar sync-config）。</p>
+<h3>来源产出（近 7 天）</h3>
+<table style="width:100%;border-collapse:collapse;font-size:14px">
+<tr class="meta"><th align="left">来源</th><th>条数</th><th>进日报</th><th>被过滤</th><th></th></tr>
+{% for r in sources %}<tr><td>{{ r.source }}</td><td align="center">{{ r.items }}</td><td align="center">{{ r.pushed }}</td>
+<td align="center" class="meta">{{ r.filtered }}</td>
+<td><button hx-post="/mute/source/{{ r.source }}" hx-target="closest td" hx-swap="innerHTML">静音 7 天</button></td></tr>{% endfor %}
+</table>
+{% if mutes %}<h3>静音中</h3>{% for m in mutes %}<div class="meta">{{ m.kind }}:{{ m.key }} → {{ m.until }} {{ '✅' if m.active else '(已过期)' }}</div>{% endfor %}{% endif %}
+</section><aside></aside>
+{% endblock %}

@@ -1,0 +1,27 @@
+{% extends "base.html" %}
+{% block badge %}今日 ${{ '%.3f'|format(usage.cost_usd) }}{% endblock %}
+{% block body %}
+<section>
+  <h2>📌 今日必读 · 编号与 Telegram 一致{% if hd.preview %}（预览）{% endif %}</h2>
+  {% for it in hd.cards %}{% if it.section == 'top' %}{% include "_card.html" %}{% endif %}{% endfor %}
+  <h2>📦 更多值得一看</h2>
+  {% for it in hd.cards %}{% if it.section == 'folded' %}{% include "_card.html" %}{% endif %}{% endfor %}
+  <h2>其余未读 · 按分数</h2>
+  <div hx-get="/feed?offset=0" hx-trigger="load" hx-swap="outerHTML" class="empty">加载中…</div>
+  <div class="kbd-hint"><kbd>j</kbd><kbd>k</kbd> 移动 · <kbd>空格</kbd> 展开 · <kbd>Enter</kbd> 开原文 · <kbd>s</kbd> 收藏 <kbd>x</kbd> 忽略 <kbd>e</kbd> 已读 <kbd>d</kbd> 深挖 · <kbd>/</kbd> 搜索</div>
+</section>
+<aside>
+  {% if sb.watched %}<div class="box"><b>👀 关注实体 · 48 小时</b>
+    {% for w in sb.watched %}<div><a href="/entity/{{ w.name|urlencode }}"><strong>{{ w.name }}</strong></a><br>
+      {% for i in w.items %}<a href="{{ i.url }}" target="_blank" rel="noopener">{{ i.text }}</a><button class="mini" data-toast="已收藏 ⭐" hx-post="/act/{{ i.id }}/save" hx-swap="none">⭐</button>{% if not loop.last %}<br>{% endif %}{% endfor %}</div>{% endfor %}
+  </div>{% endif %}
+  {% if sb.rising %}<div class="box"><b>🔥 多源事件 · 48 小时</b>
+    {% for r in sb.rising %}<div><a href="{{ r.url }}" target="_blank" rel="noopener">{{ r.text }}</a> <span class="chip">{{ r.n }} 条</span><button class="mini" data-toast="已收藏 ⭐" hx-post="/act/{{ r.id }}/save" hx-swap="none">⭐</button><button class="mini" data-toast="已入队深挖 🔍" hx-post="/act/{{ r.id }}/dig" hx-swap="none">🔍</button></div>{% endfor %}
+  </div>{% endif %}
+  {% if sb.alerts %}<div class="box"><b>⚠️ 源告警</b>{% for a in sb.alerts %}<div>{{ a }}</div>{% endfor %}</div>{% endif %}
+  <div class="box"><b>快捷入口</b>
+    <div><a href="/config">调参：订阅命中与来源产出 →</a></div>
+    <div><a href="/health">系统：源健康与 LLM 用量 →</a></div>
+  </div>
+</aside>
+{% endblock %}

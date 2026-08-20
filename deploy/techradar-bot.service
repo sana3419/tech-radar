@@ -1,0 +1,12 @@
+[Unit]
+Description=TechRadar Telegram bot
+After=network-online.target docker.service
+
+[Service]
+WorkingDirectory=/mnt/Data/worm/base/tech-radar
+ExecStart=/mnt/Data/worm/base/tech-radar/.venv/bin/techradar bot
+Restart=always
+RestartSec=10
+
+[Install]
+WantedBy=default.target

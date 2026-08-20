@@ -1,0 +1,4 @@
+{% for it in items %}{% include "_card.html" %}{% endfor %}
+{% if items|length == 20 %}
+<div hx-get="/feed?offset={{ offset + 20 }}" hx-trigger="revealed" hx-swap="outerHTML" class="empty">加载更多…</div>
+{% elif offset == 0 and not items %}{% endif %}

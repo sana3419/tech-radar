@@ -1,0 +1,20 @@
+services:
+  db:
+    image: pgvector/pgvector:pg16
+    container_name: techradar-db
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: techradar
+      POSTGRES_PASSWORD: techradar
+      POSTGRES_DB: techradar
+    ports:
+      - "5433:5432"
+    volumes:
+      - techradar_pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U techradar"]
+      interval: 5s
+      timeout: 3s
+      retries: 20
+volumes:
+  techradar_pgdata:

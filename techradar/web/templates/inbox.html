@@ -1,0 +1,18 @@
+{% extends "base.html" %}{% block body %}
+<section>
+{% for group, rows in groups.items() %}
+<h2>{% if group != '未分组' %}<a href="/entity/{{ group|urlencode }}" style="color:inherit">{{ group }}</a>{% else %}未分组{% endif %} · {{ rows|length }}</h2>
+{% for r in rows %}
+<div class="card open" id="item-{{ r.id }}">
+  <h3 style="padding-right:90px"><a href="{{ r.url }}" target="_blank" rel="noopener">{{ r.summary_one or r.title }}</a></h3>
+  <div class="sub">收藏于 {{ r.saved_at[:10] }} · <a href="/item/{{ r.id }}">详情</a></div>
+  <div class="acts" style="opacity:1"><button data-toast="已取消收藏" hx-post="/act/{{ r.id }}/unsave" hx-swap="none" hx-on:htmx:after-request="document.getElementById('item-{{ r.id }}').style.display='none'">移除</button></div>
+  <form hx-post="/note/{{ r.id }}" hx-target="find .done-slot" hx-swap="innerHTML" style="display:flex;gap:6px;margin-top:8px">
+    <input type="text" name="text" value="{{ r.note or '' }}" placeholder="加一句备注…" style="flex:1;font-size:13px">
+    <button>存</button><span class="done-slot" style="align-self:center"></span>
+  </form>
+</div>
+{% endfor %}
+{% else %}<div class="empty">收藏夹为空 — 卡片上按 <kbd>s</kbd> 收藏</div>{% endfor %}
+</section><aside></aside>
+{% endblock %}

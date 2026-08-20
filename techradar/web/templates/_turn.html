@@ -1,0 +1,22 @@
+<div class="turn" id="turn-{{ t.id }}">
+  <div class="q">{{ t.q }}</div>
+  <div class="a">
+    <div class="a-body">{{ t.a }}</div>
+    {% if t.citations %}
+    <ol class="cites">{% for c in t.citations %}
+      <li value="{{ c.n }}">
+        <span class="chip {{ 'zh' if c.kind == 'web' else 'gh' }}">{{ '联网' if c.kind == 'web' else '本地' }}</span>
+        <a href="{{ c.url }}" target="_blank" rel="noopener">{{ c.title[:80] }}</a>
+        {% if c.kind == 'local' %}<a class="mini" href="/item/{{ c.id }}">详情</a>
+        <button class="mini" data-toast="已收藏 ⭐" hx-post="/act/{{ c.id }}/save" hx-swap="none">⭐</button>
+        <button class="mini" data-toast="已入队深挖 🔍" hx-post="/act/{{ c.id }}/dig" hx-swap="none">🔍</button>
+        {% else %}<button class="mini" data-toast="已加入雷达并收藏 ⭐" hx-post="/ingest" hx-vals='{"url": "{{ c.url }}"}' hx-swap="none">➕ 收进雷达</button>{% endif %}
+      </li>
+    {% endfor %}</ol>{% endif %}
+    <div class="a-foot">
+      <span class="save-slot">{% if t.failed %}<span style="color:var(--danger)">未保存</span>{% elif t.saved %}<span class="done">已存入 Obsidian</span>{% else %}
+        <button hx-post="/ask/{{ t.id }}/save" hx-target="closest .save-slot" hx-swap="innerHTML">📝 存为笔记</button>{% endif %}</span>
+      <span style="color:var(--faint)">{% if t.web_count %}🌐 联网 {{ t.web_count }} 条 · {% endif %}{{ t.at }}{% if t.cost %} · ${{ '%.4f'|format(t.cost) }}{% endif %}</span>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,5 @@
+{% extends "base.html" %}{% block body %}
+<section><div class="card open"><pre style="white-space:pre-wrap;font-family:inherit;margin:0">{{ report }}</pre>
+<div class="meta">状态 {{ t.status }}{% if t.cost_usd %} · ${{ '%.4f'|format(t.cost_usd) }}{% endif %}{% if item_id %} · <a href="/item/{{ item_id }}">条目 #{{ item_id }}</a>{% endif %}</div>
+</div></section><aside></aside>
+{% endblock %}

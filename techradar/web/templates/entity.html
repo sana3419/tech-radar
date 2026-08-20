@@ -1,0 +1,31 @@
+{% extends "base.html" %}{% block body %}
+<section>
+<div class="card open">
+  <h3 style="font-size:20px;padding-right:0">{{ ov.name }} <span class="chip">{{ ov.type }}</span>{% if ov.watched %} <span class="chip rel">👀 关注中</span>{% endif %}</h3>
+  <div class="sub" style="white-space:normal">首次收录 {{ ov.first_seen or '—' }}
+    {% for k, v in ov.anchors.items() %} · <a href="{% if k=='github' %}https://github.com/{{ v }}{% else %}{{ v }}{% endif %}" target="_blank" rel="noopener">{{ k }}:{{ v }}</a>{% endfor %}</div>
+  {% if ov.brief %}
+  <div class="brief">
+    <div class="brief-hd">当前状态{% if ov.brief.trend %}<span class="chip {{ 'hn' if '升温' in ov.brief.trend else ('zh' if '平稳' in ov.brief.trend else 'rel') }}">{{ ov.brief.trend.split('：')[0].split(':')[0] }}</span>{% endif %}<span class="brief-at">{{ ov.brief_at }} 由 AI 生成</span></div>
+    <p>{{ ov.brief.status }}</p>
+    {% if ov.brief.highlights %}<ul>{% for h in ov.brief.highlights %}<li>{{ h }}</li>{% endfor %}</ul>{% endif %}
+    <div class="brief-kv">{% if ov.brief.activity %}<div><b>最近</b>{{ ov.brief.activity }}</div>{% endif %}
+      {% if ov.brief.trend %}<div><b>趋势</b>{{ ov.brief.trend }}</div>{% endif %}
+      {% if ov.brief.advice %}<div><b>建议</b>{{ ov.brief.advice }}</div>{% endif %}</div>
+  </div>{% endif %}
+  {% if ov.notes %}<div class="detail" style="display:block"><div class="meta">备注：{{ ov.notes }}</div></div>{% endif %}
+  <div style="margin-top:10px"><button hx-post="/entity/{{ ov.name|urlencode }}/watch" hx-swap="outerHTML">{{ '取消关注' if ov.watched else '👀 关注变动（进日报回顾）' }}</button></div>
+</div>
+{% if reports %}<h2>🔍 深挖报告</h2><div class="card open">{% for r in reports %}<div class="sub" style="white-space:normal">📄 {{ r }}<span style="color:var(--faint)">（Obsidian TechRadar/research/）</span></div>{% endfor %}</div>{% endif %}
+<h2>📜 时间线</h2>
+{% for day, rows in days.items() %}
+<div class="card open"><h3 style="padding-right:0"><span class="no">{{ day }}</span></h3>
+  {% for t in rows %}<div class="sub" style="white-space:normal;margin-top:6px"><span class="chip {{ 'rel' if t.event=='release' else ('arxiv' if t.event=='paper' else 'zh') }}">{{ t.event }}</span>
+    <a href="{{ t.url }}" target="_blank" rel="noopener" style="color:var(--fg)">{{ t.summary or t.title }}</a>
+    {% for e in t.entities[:3] %}<a href="/entity/{{ e|urlencode }}" class="why">{{ e }}</a> {% endfor %}
+    <button class="mini" data-toast="已收藏 ⭐" hx-post="/act/{{ t.item_id }}/save" hx-swap="none">⭐</button>
+    <button class="mini" data-toast="已入队深挖 🔍" hx-post="/act/{{ t.item_id }}/dig" hx-swap="none" hx-on:htmx:after-request="this.textContent='⏳';this.disabled=true">🔍</button></div>{% endfor %}
+</div>
+{% else %}<div class="empty">暂无时间线记录</div>{% endfor %}
+</section><aside></aside>
+{% endblock %}

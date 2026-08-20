@@ -1,0 +1,22 @@
+{% extends "base.html" %}{% block body %}
+<section>
+<div class="card open">
+  <h3><a href="{{ it.url }}" target="_blank" rel="noopener">{{ it.title }}</a></h3>
+  {% if it.summary_one %}<p class="one">{{ it.summary_one }}</p>{% endif %}
+  {% if it.summary_points %}<ul class="pts">{% for p in it.summary_points %}<li>{{ p }}</li>{% endfor %}</ul>{% endif %}
+  <div class="meta">类型 {{ it.kind }} · 状态 {{ it.status }} · 首见 {{ it.first_seen_at[:16] }}{% if it.published_at %} · 发布 {{ it.published_at[:16] }}{% endif %}
+  {% if it.tags %} · 标签 {{ it.tags.type }} / {{ (it.tags.domains or [])|join(',') }} / {{ (it.tags.stacks or [])|join(',') }}{% endif %}
+  {% if it.entities %} · 实体 {{ it.entities|join(', ') }}{% endif %}</div>
+  <div class="acts">
+    <button hx-post="/act/{{ it.id }}/save" hx-target="closest .acts" hx-swap="innerHTML">⭐ 收藏</button>
+    <button hx-post="/act/{{ it.id }}/dig" hx-target="closest .acts" hx-swap="innerHTML">🔍 深挖</button>
+    <button hx-post="/act/{{ it.id }}/ignore" hx-target="closest .acts" hx-swap="innerHTML">🙈 忽略</button>
+  </div>
+</div>
+<h4>来源</h4>
+{% for s in it.sources %}<div class="meta">{{ s.source }} · {{ s.author or '' }} · {{ s.metrics or {} }} · <a href="{{ s.url }}" target="_blank" rel="noopener">{{ s.url }}</a></div>{% endfor %}
+{% if it.reasons %}<h4>为什么推给你</h4><div class="meta">{{ it.reasons|join('；') }}</div>{% endif %}
+<details><summary class="meta">分数拆解（调参用）</summary><pre class="meta">{{ it.score_breakdown|tojson(indent=1) }}</pre></details>
+{% if it.content %}<details><summary class="meta">原文片段</summary><pre class="meta" style="white-space:pre-wrap">{{ it.content[:3000] }}</pre></details>{% endif %}
+</section><aside></aside>
+{% endblock %}

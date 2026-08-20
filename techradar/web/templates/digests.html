@@ -1,0 +1,7 @@
+{% extends "base.html" %}{% block body %}
+<section>{% for r in rows %}
+<div class="card"><h3 style="padding-right:0"><a href="/digests/{{ r.day }}?kind={{ r.kind }}" style="color:var(--fg);text-decoration:none">{{ r.day }}{% if r.kind=='weekly' %} · 周报{% endif %}</a>
+<span class="chip {{ 'rel' if r.sent else 'zh' }}">{{ '已推送' if r.sent else '未推送' }}</span></h3>
+<div class="sub">{% if r.stats.pushed %}必读 {{ r.stats.pushed }} · 折叠 {{ r.stats.folded }} · {% endif %}${{ '%.3f'|format(r.stats.cost or 0) }}</div></div>
+{% else %}<div class="empty">暂无归档</div>{% endfor %}</section><aside></aside>
+{% endblock %}

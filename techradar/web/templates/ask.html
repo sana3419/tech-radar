@@ -1,0 +1,33 @@
+{% extends "base.html" %}{% block body %}
+<section>
+  <div id="turns">
+    {% for t in turns %}{% include "_turn.html" %}{% else %}
+    <div class="empty">问点什么 — 它只依据你收集到的条目回答，并给出处<br>
+      <span style="font-size:13px">例如「最近 vLLM 有什么新东西」「本地推理省显存的办法」「上个月那个 Rust 写的向量扩展叫什么」</span></div>
+    {% endfor %}
+  </div>
+  <div id="pending" class="turn" style="display:none"><div class="q" id="pending-q"></div><div class="a"><div class="a-body" style="color:var(--faint)">思考中…</div></div></div>
+  <form id="askform" hx-post="/ask" hx-target="#turns" hx-swap="beforeend" hx-indicator="#pending"
+        hx-on::after-request="this.reset();document.getElementById('pending').style.display='none';window.scrollTo(0,document.body.scrollHeight)"
+        hx-on::before-request="document.getElementById('pending-q').textContent=this.q.value;document.getElementById('pending').style.display=''">
+    <input type="text" name="q" value="{{ q }}" placeholder="问一句…（可直接贴 URL 让它读）" autocomplete="off" autofocus>
+    <select name="web" title="联网检索">
+      <option value="auto">🌐 自动</option>
+      <option value="on">🌐 always</option>
+      <option value="off">仅本地</option>
+    </select>
+    <button>发送</button>
+    {% if turns %}<button type="button" hx-post="/ask/clear" hx-target="#turns" hx-swap="innerHTML" hx-confirm="清空全部对话记录？" class="ghost">清空</button>{% endif %}
+  </form>
+</section>
+<aside>
+  <div class="box"><b>它能回答什么</b>
+    <div><b>本地</b>：你系统已收集的条目。<b>联网</b>：实时搜 Brave / GitHub / HN / arXiv 并读取网页正文。</div>
+    <div>「自动」= 本地资料不足时才联网；贴 URL 会直接读那个页面。</div>
+    <div>每句话带 [n] 出处，联网结果可一键「收进雷达」。</div>
+  </div>
+  <div class="box"><b>存为笔记</b>
+    <div>点「📝 存为笔记」会写进 Obsidian 的 <code>TechRadar/notes/</code>，自动链接到相关实体，并留出「我的笔记」段落供你补充。</div>
+  </div>
+</aside>
+{% endblock %}

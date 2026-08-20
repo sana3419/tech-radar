@@ -1,0 +1,18 @@
+<div class="card{% if it.acted %} open{% endif %}" id="item-{{ it.id }}" onclick="if(!['A','BUTTON','INPUT'].includes(event.target.tagName))this.classList.toggle('open')">
+  <h3>{% if it.digest_no %}<span class="no">{{ it.digest_no }}</span>{% endif %}<a href="{{ it.url }}" target="_blank" rel="noopener" hx-post="/act/{{ it.id }}/click" hx-trigger="mousedown" hx-swap="none">{{ it.summary_one or it.title }}</a></h3>
+  <div class="sub">{{ it.sources|chips(it.extra_sources) }}{% if it.explore %}<span class="chip">🎲 探索</span>{% endif %} {% if it.summary_one %}{{ it.title[:70] }} · {% endif %}{{ it.first_seen_at[:10] }}{% if it.reasons %} · <span class="why">{{ it.reasons[0] }}</span>{% endif %}</div>
+  <div class="acts">
+    <button data-act="save" title="收藏 (s)" data-toast="已收藏 ⭐" hx-post="/act/{{ it.id }}/save" hx-swap="none">⭐</button>
+    <button data-act="dig" title="深挖 (d)" data-toast="已入队深挖，完成后推送 🔍" hx-post="/act/{{ it.id }}/dig" hx-swap="none" hx-on:htmx:after-request="this.textContent='⏳';this.disabled=true">🔍</button>
+    <button data-act="ignore" title="忽略 (x)" data-toast="已忽略" data-undo="/act/{{ it.id }}/undo" data-iid="{{ it.id }}" hx-post="/act/{{ it.id }}/ignore" hx-swap="none" hx-on:htmx:after-request="document.getElementById('item-{{ it.id }}').style.display='none'">🙈</button>
+    <button data-act="read" title="已读 (e)" data-toast="已读 ✓" data-undo="/act/{{ it.id }}/undo" data-iid="{{ it.id }}" hx-post="/act/{{ it.id }}/read" hx-swap="none" hx-on:htmx:after-request="document.getElementById('item-{{ it.id }}').style.display='none'">✓</button>
+  </div>
+  <div class="detail">
+    {% if it.summary_points %}<ul>{% for p in it.summary_points %}<li>{{ p }}</li>{% endfor %}</ul>{% endif %}
+    <div class="meta">
+      {% for s in it.sources %}<a href="{{ s.url }}" target="_blank" rel="noopener">{{ s.source }}</a>{% if s.metrics %} <span style="color:var(--faint)">{{ s.metrics }}</span>{% endif %}&nbsp;&nbsp;{% endfor %}<br>
+      {% if it.entities %}实体：{% for e in it.entities %}<a href="/entity/{{ e|urlencode }}">{{ e }}</a>&nbsp;{% endfor %}&nbsp;{% endif %}
+      <a href="/item/{{ it.id }}">完整详情 →</a>
+    </div>
+  </div>
+</div>

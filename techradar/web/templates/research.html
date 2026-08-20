@@ -1,0 +1,14 @@
+{% extends "base.html" %}{% block body %}
+<section>
+<div class="card open"><form hx-post="/research" hx-target="#rnew" hx-swap="innerHTML" style="display:flex;gap:8px">
+  <input type="text" name="target" placeholder="贴任意 URL 或 #条目id，发起深挖研判" style="flex:1"><button>🔍 深挖</button>
+</form><div id="rnew" class="sub" style="margin-top:6px"></div></div>
+{% for r in rows %}
+<div class="card">
+  <h3 style="padding-right:0"><a href="/research/{{ r.id }}" style="color:var(--fg);text-decoration:none">{{ r.tldr or ('任务 #' ~ r.id) }}</a>
+    <span class="chip {{ 'rel' if '是' in r.follow else ('hn' if '观望' in r.follow else ('arxiv' if '否' in r.follow else 'zh')) }}">{{ r.follow or r.status }}</span></h3>
+  <div class="sub">{{ r.created }}{% if r.cost %} · ${{ '%.4f'|format(r.cost) }}{% endif %}{% if r.item_id %} · <a href="/item/{{ r.item_id }}">条目 #{{ r.item_id }}</a>{% endif %} · <a href="/research/{{ r.id }}">查看报告 →</a></div>
+</div>
+{% else %}<div class="empty">还没有深挖报告 — 在卡片上按 <kbd>d</kbd> 或点 🔍</div>{% endfor %}
+</section><aside></aside>
+{% endblock %}

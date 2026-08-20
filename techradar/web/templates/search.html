@@ -1,0 +1,24 @@
+{% extends "base.html" %}{% block body %}
+<section>
+<form method="get" action="/search" style="display:flex;gap:8px;align-items:center;flex-wrap:wrap">
+  <input type="text" name="q" value="{{ q }}" placeholder="关键词，或以？结尾提问" style="flex:1;min-width:240px" autofocus>
+  <select name="days" onchange="this.form.submit()">
+    <option value="0" {% if not days %}selected{% endif %}>全部时间</option>
+    <option value="1" {% if days==1 %}selected{% endif %}>今天</option>
+    <option value="7" {% if days==7 %}selected{% endif %}>本周</option>
+    <option value="31" {% if days==31 %}selected{% endif %}>本月</option>
+  </select>
+  <label class="badge"><input type="checkbox" name="saved" value="1" {% if saved %}checked{% endif %}> 只搜收藏</label>
+  <button>搜索</button>
+</form>
+{% if answer %}
+<div class="card open" style="border-left:3px solid var(--acc)">
+  <h3>🤖 回答</h3>
+  <div style="white-space:pre-wrap;margin:6px 0">{{ answer.answer }}</div>
+  {% if answer.citations %}<div class="meta">{% for c in answer.citations %}[{{ c.n }}] <a href="{{ c.url }}" target="_blank" rel="noopener">{{ c.title[:50] }}</a><br>{% endfor %}</div>{% endif %}
+  <div class="meta">花费 ${{ '%.4f'|format(answer.cost) }}</div>
+</div>
+{% endif %}
+{% for it in rows %}{% include "_card.html" %}{% else %}{% if q %}<div class="empty">没搜到</div>{% endif %}{% endfor %}
+</section><aside></aside>
+{% endblock %}

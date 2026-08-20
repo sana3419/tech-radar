@@ -1,0 +1,4 @@
+# 封闭枚举，enrich 打标只能从这里选
+types: [release, tool, paper, opinion, tutorial, incident, other]
+domains: [llm, agents, ml, infra, database, frontend, backend, devtools, security, systems, data, mobile, other]
+stacks: [python, rust, go, typescript, javascript, java, cpp, c, zig, swift, kotlin, other]

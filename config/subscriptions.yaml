@@ -1,0 +1,66 @@
+# 订阅配置：关键词/作者/实体/来源。修改后运行 `techradar sync-config`
+topics:
+  - name: llm-inference
+    label: 推理框架
+    queries: ["vllm", "llama.cpp", "sglang", "tensorrt-llm", "local llm inference", "speculative decoding",
+              "推理框架", "本地部署", "量化", "kv cache", "kv缓存", "投机采样"]
+    boost: 1.5
+  - name: agents
+    label: Agent
+    queries: ["agent framework", "mcp server", "tool use", "multi-agent", "agentic",
+              "智能体", "多智能体", "mcp", "agent 框架", "工具调用"]
+    boost: 1.3
+  - name: rust-infra
+    label: Rust 基础设施
+    queries: ["rust database", "rust async", "tokio", "rust 数据库", "rust 异步"]
+    boost: 1.0
+
+authors:
+  # source: hackernews | github | rss:<feed_id>
+  - source: github
+    key: karpathy
+    weight: 1.5
+  - source: github
+    key: ggerganov
+    weight: 1.5
+
+entities:
+  # 白名单实体（P1 建档）；aliases 用于匹配
+  - name: vLLM
+    type: project
+    aliases: ["vllm", "vllm-project/vllm"]
+    anchors: {github: "vllm-project/vllm"}
+  - name: llama.cpp
+    type: project
+    aliases: ["llama.cpp", "ggerganov/llama.cpp", "ggml-org/llama.cpp"]
+    anchors: {github: "ggml-org/llama.cpp"}
+
+sources:
+  hackernews:
+    enabled: true
+    min_points: 30
+  github:
+    enabled: true
+    languages: ["python", "rust", "go", "typescript"]
+    min_stars: 50
+    window_days: 7
+  rss:
+    enabled: true
+    # entities 里带 anchors.github 的实体会自动生成 releases feed（rss:gh_release_<owner>_<repo>）
+    entity_releases: true
+    feeds:
+      # ---- 论文 ----
+      - {id: arxiv_cs_ai, url: "https://rss.arxiv.org/rss/cs.AI", label: arXiv, limit: 40}
+      - {id: arxiv_cs_cl, url: "https://rss.arxiv.org/rss/cs.CL", label: arXiv, limit: 30}
+      - {id: arxiv_cs_lg, url: "https://rss.arxiv.org/rss/cs.LG", label: arXiv, limit: 30}
+      # ---- 中文圈 ----
+      - {id: juejin, url: "https://juejin.cn/rss", label: 掘金, limit: 30}
+      - {id: v2ex_tech, url: "https://www.v2ex.com/feed/tab/tech.xml", label: V2EX, limit: 40}
+      # ---- 博客/社区 ----
+      - {id: simonw, url: "https://simonwillison.net/atom/everything/", label: Simon Willison}
+      - {id: hf_blog, url: "https://huggingface.co/blog/feed.xml", label: HF Blog, limit: 20}
+      - {id: lobsters, url: "https://lobste.rs/rss", label: Lobsters, limit: 25}
+      - {id: meta_eng, url: "https://engineering.fb.com/feed/", label: Meta Eng}
+      - {id: rust_blog, url: "https://blog.rust-lang.org/feed.xml", label: Rust Blog}
+      - {id: devto_ai, url: "https://dev.to/feed/tag/ai", label: Dev.to}
+      - {id: hn_show, url: "https://hnrss.org/show?points=50", label: Show HN}

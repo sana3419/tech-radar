@@ -1,0 +1,11 @@
+{% extends "base.html" %}{% block body %}
+<section>
+<h2>LLM 用量（近 7 天）</h2>
+<table><tr class="meta"><th align="left">日期</th><th>调用</th><th>花费</th></tr>
+{% for u in usage7 %}<tr><td>{{ u.day }}</td><td align="center">{{ u.calls }}</td><td align="center">${{ '%.3f'|format(u.cost) }}</td></tr>{% endfor %}</table>
+<h2>数据源</h2>
+<table style="width:100%;border-collapse:collapse;font-size:14px">
+<tr class="meta"><th align="left">来源</th><th>最近成功</th><th>条数</th><th>连续失败</th><th>月调用</th><th align="left">错误</th></tr>
+{% for r in rows %}<tr><td>{{ r.source }}</td><td class="meta">{{ (r.last_success_at or '-')[:16] }}</td><td align="center">{{ r.last_items or 0 }}</td>
+<td align="center" style="color:{{ 'crimson' if r.consecutive_failures else 'inherit' }}">{{ r.consecutive_failures }}</td><td align="center">{{ r.month_calls }}</td><td class="meta">{{ (r.last_error or '')[:60] }}</td></tr>{% endfor %}
+</table></section><aside></aside>{% endblock %}
