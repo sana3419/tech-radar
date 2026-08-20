@@ -74,7 +74,12 @@ def get_settings() -> Settings:
 
 
 def _load_yaml(name: str) -> dict:
-    p = get_settings().config_dir / name
+    """Prefer `<name>.local.yaml` when present: it is gitignored, so a public checkout ships the
+    example config while your real subscriptions stay out of the repo."""
+    d = get_settings().config_dir
+    stem, _, ext = name.rpartition(".")
+    local = d / f"{stem}.local.{ext}"
+    p = local if local.exists() else d / name
     if not p.exists():
         return {}
     with p.open("r", encoding="utf-8") as f:

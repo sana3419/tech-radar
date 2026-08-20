@@ -10,3 +10,4 @@ reports/
 .ipynb_checkpoints/
 *.egg-info/
 obsidian-vault/
+config/subscriptions.local.yaml

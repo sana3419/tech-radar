@@ -80,6 +80,8 @@ uv venv -p 3.12 .venv && uv pip install -e ".[dev,llm,bot,web,mcp]"
 
 订阅在 `config/subscriptions.yaml`：话题关键词及权重、作者白名单、关注实体（含 GitHub 锚点，会自动订阅其 Releases）、数据源开关。改完跑 `techradar sync-config`。
 
+> 想让自己的订阅不进 git，复制成 `config/subscriptions.local.yaml` 即可——存在时会优先加载，且已被 `.gitignore` 排除。`taxonomy` 与 `profile` 同理。
+
 打标枚举在 `config/taxonomy.yaml`，初始兴趣画像在 `config/profile.yaml`。
 
 ### 常驻运行
